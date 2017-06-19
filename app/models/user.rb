@@ -1,5 +1,7 @@
 class User < ApplicationRecord
+  before_create :create_remember_token
   has_secure_password
+  has_many :posts
   VALID_EMAIL_REGEX = /\A([\w+\-]\.?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i
 
   validates :login, presence: true, uniqueness: true,
@@ -9,4 +11,17 @@ class User < ApplicationRecord
                     format: VALID_EMAIL_REGEX
   validates :password, length: {minimum: 6}
 
+
+  def	User.new_remember_token
+      SecureRandom.urlsafe_base64
+  end
+
+  def	User.encrypt(token)
+      Digest::SHA1.hexdigest(token.to_s)
+  end
+
+  private
+  def	create_remember_token
+      self.remember_token	=	User.encrypt(User.new_remember_token)
+  end
 end
