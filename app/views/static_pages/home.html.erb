@@ -1,5 +1,10 @@
 <% provide :title, "Home" %>
 
 <div class="container">
-  
+  <% if signed_in? %>
+  <% @posts.each do |post| %>
+    <%= image_tag post.image %>
+    <p><%= post.description %></p>
+  <% end %>
+  <% end %>
 </div>
